@@ -32,6 +32,7 @@ class ContactDetailViewController: UIViewController {
     
     @IBAction func saveButtonTapped(_ sender: UIBarButtonItem) {
         //unwrap the text fields' texts
+        let phoneCharacterset = "()-1234567890"
         guard let contactName = nameTextField.text,
         let contactPhone = phoneNumberTextField.text,
             let contactEmail = emailTextField.text else {return}
@@ -45,7 +46,18 @@ class ContactDetailViewController: UIViewController {
             //present the alert
             self.present(blankNameAlert, animated: true, completion: nil)
             return
-        } else {
+        } else if contactPhone.contains(where: {!phoneCharacterset.contains($0)}) && contactPhone != ""{
+            //if the phone number contains anything besides a letter, number, parenthesis, or dash, and it's not just blank cuz blank is allowed
+            let phoneCharAlert = UIAlertController(title: "Hold up bub", message: "The phone number should only contain numbers, (, ), and -", preferredStyle: .alert)
+            //make an action to close it
+            let closeAction = UIAlertAction(title: "Got it", style: .destructive, handler: nil)
+            //add the action
+            phoneCharAlert.addAction(closeAction)
+            //present the alert
+            self.present(phoneCharAlert, animated: true, completion: nil)
+            return
+            
+        }else {
             //otherwise we hve everything we need to make or update a contact. Let's see which of the two we're doing.
             if let contact = contact{
                 //this should double as unwrapping the contact and checking that it's there. If it's there we need to update.
